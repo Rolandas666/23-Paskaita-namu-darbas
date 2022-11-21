@@ -1,0 +1,125 @@
+2 Uzduotis
+
+SELECT * FROM products ORDER BY buyPrice DESC LIMIT 1
+-- MAX buyPrice 103.42 skiriasi nuo atsakymo
+
+3 Uzduotis
+
+SELECT * FROM products WHERE productLine="Motorcycles" ORDER BY buyPrice DESC LIMIT 1
+-- MAX buyPrice 91.02 skiriasi nuo atsakymo
+
+4 Uzduotis
+
+SELECT 
+productLine,
+count(productCode) AS totalProduct
+FROM products
+GROUP by productLine
+
+5 Uzduotis
+
+SELECT
+    orders.orderNumber,
+    orders.orderDate,
+    orders.status,
+    customers.customerName,
+    customers.postalCode,
+    customers.country,
+    customers.creditLimit,
+    customers.salesRepEmployeeNumber
+FROM orders
+
+LEFT JOIN customers
+ON orders.customerNumber = customers.customerNumber
+
+6 Uzduotis
+
+SELECT
+    orders.orderNumber,
+    orders.orderDate,
+    orders.status,
+    customers.customerName,
+    customers.postalCode,
+    customers.country,
+    customers.creditLimit,
+    employees.firstName AS emplyerFirstName,
+    employees.lastName AS emplyerLastName,
+    employees.jobTitle
+FROM orders
+
+LEFT JOIN customers
+ON orders.customerNumber = customers.customerNumber
+
+INNER JOIN employees
+ON employees.employeeNumber= customers.salesRepEmployeeNumber  
+
+ORDER BY `orders`.`orderNumber` ASC
+
+7 Uzduotis
+
+SELECT
+    orders.orderNumber,
+    orderdetails.productCode,
+    orderdetails.quantityOrdered * orderdetails.priceEach AS totalItemPrice,
+    orders.orderDate,
+    orders.status,
+    customers.customerName,
+    customers.postalCode,
+    customers.country,
+    customers.creditLimit,
+    employees.firstName AS emplyerFirstName,
+    employees.lastName AS emplyerLastName,
+    employees.jobTitle
+FROM orders
+
+LEFT JOIN customers
+ON orders.customerNumber = customers.customerNumber
+
+LEFT JOIN orderdetails
+ON orders.orderNumber = orderdetails.orderNumber
+
+INNER JOIN employees
+ON employees.employeeNumber= customers.salesRepEmployeeNumber  
+
+ORDER BY `orders`.`orderNumber` ASC
+
+8 Uzduotis
+
+SELECT
+    orderdetails.orderNumber,
+    (SELECT SUM(orderdetails.quantityOrdered * orderdetails.priceEach) FROM orderdetails WHERE orderdetails.orderNumber="10100") AS totalWholeOrderPrice
+FROM orderdetails
+
+WHERE orderdetails.orderNumber="10100"
+
+GROUP by orderdetails.orderNumber
+
+
+-- arba isplestinis variantas su 7 uzduoties lentele:
+
+SELECT
+    orders.orderNumber,
+    (SELECT SUM(orderdetails.quantityOrdered * orderdetails.priceEach) FROM orderdetails WHERE orderdetails.orderNumber="10100") AS totalWholeOrderPrice,
+    orderdetails.productCode,
+    orderdetails.quantityOrdered * orderdetails.priceEach AS totalItemPrice,
+    orders.orderDate,
+    orders.status,
+    customers.customerName,
+    customers.postalCode,
+    customers.country,
+    customers.creditLimit,
+    employees.firstName AS emplyerFirstName,
+    employees.lastName AS emplyerLastName,
+    employees.jobTitle
+FROM orders
+
+LEFT JOIN customers
+ON orders.customerNumber = customers.customerNumber
+
+LEFT JOIN orderdetails
+ON orders.orderNumber = orderdetails.orderNumber
+
+INNER JOIN employees
+ON employees.employeeNumber= customers.salesRepEmployeeNumber  
+
+WHERE orderdetails.orderNumber="10100"
